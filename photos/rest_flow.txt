@@ -1,0 +1,63 @@
+$ curl -i -F "photo=@obama-gillard.jpg" http://127.0.0.1:8001/restdesc/photos
+HTTP/1.1 100 Continue
+
+HTTP/1.1 201 Created
+X-Powered-By: Express
+Location: http://127.0.0.1:8001/restdesc/photos/1
+Content-Type: text/html
+Content-Length: 119
+Connection: keep-alive
+
+Your photo was uploaded: <a href="http://127.0.0.1:8001/restdesc/photos/1">http://127.0.0.1:8001/restdesc/photos/1</a>
+
+===========
+
+$ curl -i -H "Accept: image/jpg" http://127.0.0.1:8001/restdesc/photos/1
+HTTP/1.1 200 OK
+X-Powered-By: Express
+Content-Type: image/jpg
+Link: <http://127.0.0.1:8001/restdesc/photos/1/faces>; rel="describedby"; title="contained faces"; type="text/n3"
+Content-Length: 372819
+Connection: keep-alive
+
+[Binary Data]
+
+===========
+
+$ curl -i -H "Accept: text/n3" http://127.0.0.1:8001/restdesc/photos/1/faces
+HTTP/1.1 200 OK
+X-Powered-By: Express
+Content-Type: text/n3
+Link: <http://127.0.0.1:8001/restdesc/photos/1/faces/1_1>; rel="related"; title="contained face"; type="image/jpg",
+      <http://127.0.0.1:8001/restdesc/photos/1/persons/1_1>; rel="related"; title="contained face"; type="text/plain",
+      <http://127.0.0.1:8001/restdesc/photos/1/faces/1_2>; rel="related"; title="contained face"; type="image/jpg"      
+      <http://127.0.0.1:8001/restdesc/photos/1/persons/1_2>; rel="related"; title="contained face"; type="text/plain"      
+Content-Length: 328
+Connection: keep-alive
+
+@prefix foaf: <http://xmlns.com/foaf/0.1/>.
+@prefix dbpedia:	<http://dbpedia.org/resource/>.
+<http://organon.elis.ugent.be/assets/photos/obama-gillard.jpg#xywh=117,224,82,92> foaf:depicts dbpedia:Barack_Obama.
+<http://organon.elis.ugent.be/assets/photos/obama-gillard.jpg#xywh=790,269,85,82> foaf:depicts dbpedia:Julia_Gillard.
+
+===========
+
+$ curl -i -H "Accept: image/jpg" http://127.0.0.1:8001/restdesc/photos/1/faces/1_2
+HTTP/1.1 200 OK
+X-Powered-By: Express
+Content-Type: image/jpg
+Content-Length: 12516
+Connection: keep-alive
+
+[Binary Data]
+
+===========
+
+$ curl -i -H "Accept: text/plain" http://127.0.0.1:8001/restdesc/photos/1/persons/1_2
+HTTP/1.1 200 OK
+X-Powered-By: Express
+Content-Type: text/plain
+Content-Length: 13
+Connection: keep-alive
+
+Julia Gillard

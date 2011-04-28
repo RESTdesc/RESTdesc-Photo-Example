@@ -30,7 +30,7 @@ X-Powered-By: Express
 Content-Type: text/n3
 Link: <http://127.0.0.1:8001/restdesc/photos/1/faces/1_1>; rel="related"; title="contained face"; type="image/jpg",
       <http://127.0.0.1:8001/restdesc/photos/1/persons/1_1>; rel="related"; title="contained face"; type="text/plain",
-      <http://127.0.0.1:8001/restdesc/photos/1/faces/1_2>; rel="related"; title="contained face"; type="image/jpg"      
+      <http://127.0.0.1:8001/restdesc/photos/1/faces/1_2>; rel="related"; title="contained face"; type="image/jpg",      
       <http://127.0.0.1:8001/restdesc/photos/1/persons/1_2>; rel="related"; title="contained face"; type="text/plain"      
 Content-Length: 328
 Connection: keep-alive

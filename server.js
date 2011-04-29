@@ -30,9 +30,9 @@ app.get(/^\/restdesc\/photos\/\d+$/, getPhoto);
 
 app.get(/^\/restdesc\/photos\/\d+\/faces$/, getFaces);
 
-app.get(/^\/restdesc\/photos\/\d+\/faces\/\d+_\d+$/, getFace);
+app.get(/^\/restdesc\/photos\/\d+\/faces\/\d+$/, getFace);
 
-app.get(/^\/restdesc\/photos\/\d+\/persons\/\d+_\d+$/, getPerson);
+app.get(/^\/restdesc\/photos\/\d+\/persons\/\d+$/, getPerson);
 
 var port = process.env.PORT || 8001;
 var host = process.env.HOST || '127.0.0.1';
@@ -103,27 +103,20 @@ function getFaces(req, res, next) {
     fs.readFile(__dirname + '/photos/' + id + '.n3', function (err, data) {
       if (err) throw err;
       res.header('Content-Type', 'text/n3');
-      var related;
-      if (id === '1') {        
-        related = ['1_1', '1_2'];
-      } else if (id === '2') {
-        related = ['2_1', '2_2', '2_3', '2_4'];
-      } else if (id === '3') {
-        related = ['3_1', '3_2', '3_3', '3_4', '3_5', '3_6'];
-      } 
+      var relatedCount = {'1': 2, '2': 4, '3': 6}[id];
       var linkHeaders = '';
-      related.forEach(function(faceId, i) {
+      for(var faceId = 1; faceId <= relatedCount; faceId++) {
         var location1 = 'http://' + host + ':' + port + '/restdesc/photos/' +
             id + '/faces/' + faceId;
         var personId = faceId;    
         var location2 = 'http://' + host + ':' + port + '/restdesc/photos/' +
             id + '/persons/' + personId;
 
-        linkHeaders += (i > 0? ',\n      ' : '') + '<' + location1 +
+        linkHeaders += (faceId > 1 ? ',\n      ' : '') + '<' + location1 +
             '>; rel="related"; title="contained face"; type="image/jpg"' +
             ',\n      <' + location2 +
             '>; rel="related"; title="contained face"; type="text/plain"';        
-      });
+      }
       res.header('Link', linkHeaders);
       res.send(data);
     });      
@@ -131,13 +124,12 @@ function getFaces(req, res, next) {
 }
 
 function getFace(req, res, next) {
-  var path = /^\/restdesc\/photos\/\d+\/faces\/(\d+_\d+)$/;
+  var path = /^\/restdesc\/photos\/(\d+)\/faces\/(\d+)$/;
   var pathname = require('url').parse(req.url).pathname;
-  var faceId = pathname.replace(path, '$1');  
   var accept = req.header('Accept', '*/*');
   if ((accept.indexOf('image/jpg') !== -1) ||
       (accept.indexOf('*/*') !== -1)) {  
-    var fileName = __dirname + '/photos/' + faceId + '.jpg';    
+    var fileName = __dirname + pathname.replace(path, '/photos/$1_$2.jpg');
     fs.readFile(fileName, function (err, data) {
       if (err) throw err;
       res.header('Content-Type', 'image/jpg');
@@ -147,14 +139,20 @@ function getFace(req, res, next) {
 }
 
 function getPerson(req, res, next) {
-  var path = /^\/restdesc\/photos\/\d+\/persons\/(\d+_\d+)$/;
+  var path = /^\/restdesc\/photos\/(\d+)\/persons\/(\d+)$/;
   var pathname = require('url').parse(req.url).pathname;
-  var personId = pathname.replace(path, '$1');  
+  var fileName = __dirname + pathname.replace(path, '/photos/$1_$2');
   var accept = req.header('Accept', '*/*');
-  if ((accept.indexOf('text/plain') !== -1) ||
-      (accept.indexOf('*/*') !== -1)) {  
-    var fileName = __dirname + '/photos/' + personId + '.txt';    
-    fs.readFile(fileName, function (err, data) {
+  if((accept.indexOf('text/n3') !== -1)) {
+      fs.readFile(fileName + '.n3', function (err, data) {
+        if (err) throw err;
+        res.header('Content-Type', 'text/n3');
+        res.send(data);
+      });
+  }
+  else if ((accept.indexOf('text/plain') !== -1) ||
+      (accept.indexOf('*/*') !== -1)) {
+    fs.readFile(fileName + '.txt', function (err, data) {
       if (err) throw err;
       res.header('Content-Type', 'text/plain');
       res.send(data);

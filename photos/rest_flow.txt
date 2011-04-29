@@ -28,21 +28,21 @@ $ curl -i -H "Accept: text/n3" http://127.0.0.1:8001/restdesc/photos/1/faces
 HTTP/1.1 200 OK
 X-Powered-By: Express
 Content-Type: text/n3
-Link: <http://127.0.0.1:8001/restdesc/photos/1/faces/1_1>; rel="related"; title="contained face"; type="image/jpg",
-      <http://127.0.0.1:8001/restdesc/photos/1/persons/1_1>; rel="related"; title="contained face"; type="text/plain",
-      <http://127.0.0.1:8001/restdesc/photos/1/faces/1_2>; rel="related"; title="contained face"; type="image/jpg",      
-      <http://127.0.0.1:8001/restdesc/photos/1/persons/1_2>; rel="related"; title="contained face"; type="text/plain"      
-Content-Length: 328
+Link: <http://127.0.0.1:8001/restdesc/photos/1/faces/1>; rel="related"; title="contained face"; type="image/jpg",
+      <http://127.0.0.1:8001/restdesc/photos/1/persons/1>; rel="related"; title="contained face"; type="text/plain",
+      <http://127.0.0.1:8001/restdesc/photos/1/faces/2>; rel="related"; title="contained face"; type="image/jpg",
+      <http://127.0.0.1:8001/restdesc/photos/1/persons/2>; rel="related"; title="contained face"; type="text/plain"
+Content-Length: 377
 Connection: keep-alive
 
+@prefix : </restdesc/ontology#>.
 @prefix foaf: <http://xmlns.com/foaf/0.1/>.
-@prefix dbpedia:	<http://dbpedia.org/resource/>.
-<http://organon.elis.ugent.be/assets/photos/obama-gillard.jpg#xywh=117,224,82,92> foaf:depicts dbpedia:Barack_Obama.
-<http://organon.elis.ugent.be/assets/photos/obama-gillard.jpg#xywh=790,269,85,82> foaf:depicts dbpedia:Julia_Gillard.
+</restdesc/photos/obama-gillard.jpg#xywh=117,224,82,92> :regionId 1; :belongsTo </restdesc/photos/obama-gillard.jpg>; foaf:depicts [ a foaf:Person ].
+</restdesc/photos/obama-gillard.jpg#xywh=790,269,85,82> :regionId 2; :belongsTo </restdesc/photos/obama-gillard.jpg>; foaf:depicts [ a foaf:Person ].
 
 ===========
 
-$ curl -i -H "Accept: image/jpg" http://127.0.0.1:8001/restdesc/photos/1/faces/1_2
+$ curl -i -H "Accept: image/jpg" http://127.0.0.1:8001/restdesc/photos/1/faces/2
 HTTP/1.1 200 OK
 X-Powered-By: Express
 Content-Type: image/jpg
@@ -53,7 +53,7 @@ Connection: keep-alive
 
 ===========
 
-$ curl -i -H "Accept: text/plain" http://127.0.0.1:8001/restdesc/photos/1/persons/1_2
+$ curl -i -H "Accept: text/plain" http://127.0.0.1:8001/restdesc/photos/1/persons/2
 HTTP/1.1 200 OK
 X-Powered-By: Express
 Content-Type: text/plain
@@ -61,3 +61,18 @@ Content-Length: 13
 Connection: keep-alive
 
 Julia Gillard
+
+===========
+
+$ curl -i -H "Accept: text/n3" http://127.0.0.1:8001/restdesc/photos/1/persons/2
+HTTP/1.1 200 OK
+X-Powered-By: Express
+Content-Type: text/n3
+Content-Length: 268
+Connection: keep-alive
+
+@prefix foaf: <http://xmlns.com/foaf/0.1/>.
+@prefix dbpedia: <http://dbpedia.org/resource/>.
+</restdesc/photos/obama-gillard.jpg#xywh=790,269,85,82> foaf:depicts dbpedia:Julia_Gillard;
+                                                        foaf:name "Julia Gillard".
+

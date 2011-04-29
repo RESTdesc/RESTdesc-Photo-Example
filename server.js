@@ -151,7 +151,15 @@ function getPerson(req, res, next) {
   var pathname = require('url').parse(req.url).pathname;
   var personId = pathname.replace(path, '$1');  
   var accept = req.header('Accept', '*/*');
-  if ((accept.indexOf('text/plain') !== -1) ||
+  if((accept.indexOf('text/n3') !== -1)) {
+      var fileName = __dirname + '/photos/' + personId + '.n3';
+      fs.readFile(fileName, function (err, data) {
+        if (err) throw err;
+        res.header('Content-Type', 'text/n3');
+        res.send(data);
+      });
+  }
+  else if ((accept.indexOf('text/plain') !== -1) ||
       (accept.indexOf('*/*') !== -1)) {  
     var fileName = __dirname + '/photos/' + personId + '.txt';    
     fs.readFile(fileName, function (err, data) {

@@ -1,6 +1,6 @@
+@prefix : </restdesc/ontology#>.
 @prefix foaf: <http://xmlns.com/foaf/0.1/>.
-@prefix dbpedia:	<http://dbpedia.org/resource/>.
-<http://organon.elis.ugent.be/assets/photos/obama-kenny.jpg#xywh=722,89,144,173> foaf:depicts dbpedia:Barack_Obama.
-<http://organon.elis.ugent.be/assets/photos/obama-kenny.jpg#xywh=611,134,118,132> foaf:depicts dbpedia:Michelle_Obama.
-<http://organon.elis.ugent.be/assets/photos/obama-kenny.jpg#xywh=140,129,176,195> foaf:depicts dbpedia:Enda_Kenny.
-<http://organon.elis.ugent.be/assets/photos/obama-kenny.jpg#xywh=117,224,82,92> foaf:depicts dbpedia:Fionnuala_O_Kelly.
+</restdesc/photos/obama-kenny.jpg#xywh=140,129,176,195> :regionId 1; :belongsTo </restdesc/photos/obama-kenny.jpg>; foaf:depicts [ a foaf:Person ].
+</restdesc/photos/obama-kenny.jpg#xywh=117,224,82,92>   :regionId 2; :belongsTo </restdesc/photos/obama-kenny.jpg>; foaf:depicts [ a foaf:Person ].
+</restdesc/photos/obama-kenny.jpg#xywh=611,134,118,132> :regionId 3; :belongsTo </restdesc/photos/obama-kenny.jpg>; foaf:depicts [ a foaf:Person ].
+</restdesc/photos/obama-kenny.jpg#xywh=722,89,144,173>  :regionId 4; :belongsTo </restdesc/photos/obama-kenny.jpg>; foaf:depicts [ a foaf:Person ].

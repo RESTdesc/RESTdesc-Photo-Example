@@ -1,0 +1,4 @@
+@prefix foaf: <http://xmlns.com/foaf/0.1/>.
+@prefix dbpedia: <http://dbpedia.org/resource/>.
+</restdesc/photos/obama-kenny.jpg#xywh=611,134,118,132> foaf:depicts dbpedia:Michelle_Obama;
+                                                        foaf:name "Michelle Obama".

@@ -20,19 +20,19 @@ app.configure('production', function(){
   app.use(express.errorHandler());
 });
 
-app.options(/^\/restdesc\/photos$/, optionsPhotos);
+app.options(/^\/photos$/, optionsPhotos);
 
-app.post(/^\/restdesc\/photos$/, postPhoto);
+app.post(/^\/photos$/, postPhoto);
 
-app.get(/^\/restdesc\/photos$/, getPhotos);
+app.get(/^\/photos$/, getPhotos);
 
-app.get(/^\/restdesc\/photos\/\d+$/, getPhoto);
+app.get(/^\/photos\/\d+$/, getPhoto);
 
-app.get(/^\/restdesc\/photos\/\d+\/faces$/, getFaces);
+app.get(/^\/photos\/\d+\/faces$/, getFaces);
 
-app.get(/^\/restdesc\/photos\/\d+\/faces\/\d+$/, getFace);
+app.get(/^\/photos\/\d+\/faces\/\d+$/, getFace);
 
-app.get(/^\/restdesc\/photos\/\d+\/persons\/\d+$/, getPerson);
+app.get(/^\/photos\/\d+\/persons\/\d+$/, getPerson);
 
 var port = process.env.PORT || 8001;
 var host = process.env.HOST || '127.0.0.1';
@@ -46,7 +46,7 @@ function getPhotos(req, res, next) {
 }
 
 function getPhoto(req, res, next) {
-  var path = /^\/restdesc\/photos\/(\d+)$/;
+  var path = /^\/photos\/(\d+)$/;
   var pathname = require('url').parse(req.url).pathname;
   var id = pathname.replace(path, '$1');
   var accept = req.header('Accept', '*/*');
@@ -95,7 +95,7 @@ function postPhoto(req, res, next) {
 }
 
 function getFaces(req, res, next) {
-  var path = /^\/restdesc\/photos\/(\d+)\/faces$/;
+  var path = /^\/photos\/(\d+)\/faces$/;
   var pathname = require('url').parse(req.url).pathname;
   var id = pathname.replace(path, '$1');
   var accept = req.header('Accept', '*/*');
@@ -125,7 +125,7 @@ function getFaces(req, res, next) {
 }
 
 function getFace(req, res, next) {
-  var path = /^\/restdesc\/photos\/(\d+)\/faces\/(\d+)$/;
+  var path = /^\/photos\/(\d+)\/faces\/(\d+)$/;
   var pathname = require('url').parse(req.url).pathname;
   var fileName = __dirname + pathname.replace(path, '/photos/$1_$2.jpg');
   var accept = req.header('Accept', '*/*');
@@ -137,7 +137,7 @@ function getFace(req, res, next) {
 }
 
 function getPerson(req, res, next) {
-  var path = /^\/restdesc\/photos\/(\d+)\/persons\/(\d+)$/;
+  var path = /^\/photos\/(\d+)\/persons\/(\d+)$/;
   var pathname = require('url').parse(req.url).pathname;
   var fileName = __dirname + pathname.replace(path, '/photos/$1_$2');
   var accept = req.header('Accept', '*/*');

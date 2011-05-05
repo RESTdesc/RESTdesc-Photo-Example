@@ -170,4 +170,4 @@ function respondWithFile(res, fileName, contentType, headers) {
 }
 
 app.listen(port);
-console.log('node.JS running on http://' + host + ':' + port);
+console.log('node.JS running on http://' + host + ':' + port + '\n');

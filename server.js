@@ -20,13 +20,16 @@ app.configure('production', function(){
   app.use(express.errorHandler());
 });
 
+app.options(/^\/$/, optionsBase);
+app.get(/^\/$/, getBase);
+
 app.options(/^\/photos$/, optionsPhotos);
+app.get(/^\/photos$/, getPhotos);
 
 app.post(/^\/photos$/, postPhoto);
 
-app.get(/^\/photos$/, getPhotos);
-
 app.get(/^\/photos\/\d+$/, getPhoto);
+app.options(/^\/photos\/\d+$/, optionsPhoto);
 
 app.get(/^\/photos\/\d+\/faces$/, getFaces);
 
@@ -37,12 +40,58 @@ app.get(/^\/photos\/\d+\/persons\/\d+$/, getPerson);
 var port = process.env.PORT || 8001;
 var host = process.env.HOST || '127.0.0.1';
 
-function optionsPhotos(req, res, next) {
-  res.send('OPTIONS\n');  
+function getBase(req, res, next) {
+  optionsBase(req, res, next);  
+}
+
+function optionsBase(req, res, next) {  
+  res.header('Link', '<./>; rel=self,\n      <./photos>; rel=index; type=text/n3;charset=utf-8');
+  res.header('Allow', 'GET, OPTIONS');
+  var accept = req.header('Accept', '*/*');
+  console.log('Accept: ' + accept);
+  var message;
+  if ((accept.indexOf('text/html') !== -1) ||
+      (accept.indexOf('*/*') !== -1)) {
+    res.header('Content-Type', 'text/html; charset=utf-8');    
+    message = 'These are your current OPTIONS:\n<ul>\n' +
+        '<li><a href="./photos">./photos</a></li>\n' +
+        '</ul>\n';
+  }
+  res.send(message, 200);  
 }
 
 function getPhotos(req, res, next) {
-  res.send('GET\n');  
+  optionsPhotos(req, res, next);  
+}
+
+function optionsPhotos(req, res, next) {
+  res.header('Link', '<./>;\n      rel=index;\n      rel=self');
+  res.header('Allow', 'GET, OPTIONS, POST');  
+  var accept = req.header('Accept', '*/*');
+  console.log('Accept: ' + accept);  
+  var message;
+  if ((accept.indexOf('text/html') !== -1) ||
+      (accept.indexOf('*/*') !== -1)) {
+    res.header('Content-Type', 'text/html; charset=utf-8');      
+    message = 'These are your current OPTIONS:\n<ul>\n' +
+        '<li><a href="./photos" rel="self">./photos</a></li>\n' +
+        '<li><a href="./photos/1" rel="http://xmlns.com/foaf/0.1/Image">./photos/1</a></li>\n' +
+        '<li><a href="./photos/2" rel="http://xmlns.com/foaf/0.1/Image">./photos/2</a></li>\n' +            
+        '<li><a href="./photos/3" rel="http://xmlns.com/foaf/0.1/Image">./photos/3</a></li>\n' +                  
+        '</ul>\n';
+  } else if (accept.indexOf('text/n3') !== -1) {
+    res.header('Content-Type', 'text/n3; charset=utf-8');        
+    message = '{\n' +
+        '  ?photo a foaf:Image.\n' +
+        '  } => {\n' +
+        '  _:request http:methodName "POST";\n' +
+        '    http:requestURI "/photos";\n' +
+        '    http:body [ tmpl:formData ("photo=" ?photo) ];\n' +
+        '    http:resp [ tmpl:location ("/photos/" ?photoId) ].\n' +
+        '  ?photo :photoId _:photoId. }.\n' +    
+        '}\n';
+  }
+  res.send(message);
 }
 
 function getPhoto(req, res, next) {
@@ -57,7 +106,26 @@ function getPhoto(req, res, next) {
         '/faces';
     var fileName = __dirname + '/photos/' + id + '.jpg';
     respondWithFile(res, fileName, 'image/jpg', {
-      'Link': '<' + location + '>; rel="describedby"; title="contained faces"; type="text/n3"'
+      'Link': '<' + location + '>; rel="http://dbpedia.org/resource/Face_detection"; title="contained faces"; type="text/n3"'
+    });
+  }
+  else
+    res.send('', 406);
+}
+
+function optionsPhoto(req, res, next) {
+  var path = /^\/photos\/(\d+)$/;
+  var pathname = require('url').parse(req.url).pathname;
+  var id = pathname.replace(path, '$1');
+  var accept = req.header('Accept', '*/*');
+  console.log('Accept: ' + accept);
+  if ((accept.indexOf('image/jpg') !== -1) ||
+      (accept.indexOf('*/*') !== -1)) {
+    var location = 'http://' + host + ':' + port + '/restdesc/photos/' + id +
+        '/faces';
+    var fileName = __dirname + '/photos/' + id + '.jpg';
+    respondWithFile(res, fileName, 'image/jpg', {
+      'Link': '<' + location + '>; rel="http://restdesc.no.de/ontology#faces"; title="contained faces"; type="text/n3"'
     });
   }
   else
@@ -170,4 +238,4 @@ function respondWithFile(res, fileName, contentType, headers) {
 }
 
 app.listen(port);
-console.log('node.JS running on http://' + host + ':' + port + '\n');
+console.log('node.JS running on http://' + host + ':' + port);

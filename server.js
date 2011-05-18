@@ -109,11 +109,10 @@ function getPhoto(req, res, next) {
   console.log('Accept: ' + accept);
   if ((accept.indexOf('image/jpeg') !== -1) ||
       (accept.indexOf('*/*') !== -1)) {
-    var location = 'http://' + host + ':' + port + '/restdesc/photos/' + id +
-        '/faces';
+    var location = '/photos/' + id + '/faces';
     var fileName = __dirname + '/photos/' + id + '.jpg';
     respondWithFile(res, fileName, 'image/jpeg', {
-      'Link': '<' + location + '>; rel="http://dbpedia.org/resource/Face_detection"; title="contained faces"; type="text/n3"'
+      'Link': '<' + location + '>; rel="http://restdesc.no.de/ontology#faces"; title="contained faces"; type="text/n3"'
     });
   }
   else
@@ -125,18 +124,14 @@ function optionsPhoto(req, res, next) {
   var pathname = require('url').parse(req.url).pathname;
   var id = pathname.replace(path, '$1');
   var accept = req.header('Accept', '*/*');
+  res.header('Allow', 'GET, OPTIONS, POST');
   console.log('Accept: ' + accept);
   if ((accept.indexOf('image/jpeg') !== -1) ||
       (accept.indexOf('*/*') !== -1)) {
-    var location = 'http://' + host + ':' + port + '/restdesc/photos/' + id +
-        '/faces';
-    var fileName = __dirname + '/photos/' + id + '.jpg';
-    respondWithFile(res, fileName, 'image/jpeg', {
-      'Link': '<' + location + '>; rel="http://restdesc.no.de/ontology#faces"; title="contained faces"; type="text/n3"'
-    });
+    var location = '/photos/' + id + '/faces';
+    res.header('Link', '<' + location + '>; rel="http://restdesc.no.de/ontology#faces"; title="contained faces"; type="text/n3"');
   }
-  else
-    res.send('', 406);
+  res.send('');
 }
 
 function postPhoto(req, res, next) {
@@ -157,7 +152,7 @@ function postPhoto(req, res, next) {
         return res.send('', 412);
       }
       console.log('Photo ID ' + id);
-      var location = 'http://' + host + ':' + port + '/restdesc/photos/' + id;
+      var location = '/photos/' + id;
       res.header('Location', location)
       res.header('Content-Type', 'text/html');
       res.send('Your photo was uploaded: <a href="' + location + '">' +
@@ -179,11 +174,9 @@ function getFaces(req, res, next) {
     var relatedCount = {'1': 2, '2': 4, '3': 6}[id] || 0;
     var linkHeaders = '';
     for(var faceId = 1; faceId <= relatedCount; faceId++) {
-      var location1 = 'http://' + host + ':' + port + '/restdesc/photos/' +
-          id + '/faces/' + faceId;
+      var location1 = '/photos/' + id + '/faces/' + faceId;
       var personId = faceId;
-      var location2 = 'http://' + host + ':' + port + '/restdesc/photos/' +
-          id + '/persons/' + personId;
+      var location2 = '/photos/' + id + '/persons/' + personId;
 
       linkHeaders += (faceId > 1 ? ',\n      ' : '') + '<' + location1 +
           '>; rel="related"; title="contained face"; type="image/jpeg"' +

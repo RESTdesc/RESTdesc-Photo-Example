@@ -184,7 +184,7 @@ function getFaces(req, res, next) {
           '>; rel="related"; title="contained face"; type="text/plain"';
     }
     var fileName= __dirname + '/photos/' + id + '.n3';
-    respondWithFile(res, fileName, 'image/jpg', {
+    respondWithFile(res, fileName, 'text/n3', {
       'Link': linkHeaders
     });
   }

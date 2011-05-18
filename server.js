@@ -5,7 +5,7 @@ var express = require('express');
 var fs = require('fs');
 var querystring = require('querystring');
 
-var app = express.createServer();
+var app = exports.server = express.createServer();
 
 app.configure(function(){
   app.use(express.methodOverride());
@@ -37,8 +37,15 @@ app.get(/^\/photos\/\d+\/faces\/\d+$/, getFace);
 
 app.get(/^\/photos\/\d+\/persons\/\d+$/, getPerson);
 
-var port = process.env.PORT || 8001;
-var host = process.env.HOST || '127.0.0.1';
+var port;
+var host;
+
+app.start = function(serverPort, serverHost) {
+  port = serverPort || 8001;
+  host = serverHost || '127.0.0.1';
+  this.listen(port);
+  console.log('node.JS running on http://' + host + ':' + port);
+}
 
 function getBase(req, res, next) {
   optionsBase(req, res, next);  
@@ -236,6 +243,3 @@ function respondWithFile(res, fileName, contentType, headers) {
     return true;
   });
 }
-
-app.listen(port);
-console.log('node.JS running on http://' + host + ':' + port);

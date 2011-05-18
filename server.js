@@ -100,12 +100,12 @@ function getPhoto(req, res, next) {
   var id = pathname.replace(path, '$1');
   var accept = req.header('Accept', '*/*');
   console.log('Accept: ' + accept);
-  if ((accept.indexOf('image/jpg') !== -1) ||
+  if ((accept.indexOf('image/jpeg') !== -1) ||
       (accept.indexOf('*/*') !== -1)) {
     var location = 'http://' + host + ':' + port + '/restdesc/photos/' + id +
         '/faces';
     var fileName = __dirname + '/photos/' + id + '.jpg';
-    respondWithFile(res, fileName, 'image/jpg', {
+    respondWithFile(res, fileName, 'image/jpeg', {
       'Link': '<' + location + '>; rel="http://dbpedia.org/resource/Face_detection"; title="contained faces"; type="text/n3"'
     });
   }
@@ -119,12 +119,12 @@ function optionsPhoto(req, res, next) {
   var id = pathname.replace(path, '$1');
   var accept = req.header('Accept', '*/*');
   console.log('Accept: ' + accept);
-  if ((accept.indexOf('image/jpg') !== -1) ||
+  if ((accept.indexOf('image/jpeg') !== -1) ||
       (accept.indexOf('*/*') !== -1)) {
     var location = 'http://' + host + ':' + port + '/restdesc/photos/' + id +
         '/faces';
     var fileName = __dirname + '/photos/' + id + '.jpg';
-    respondWithFile(res, fileName, 'image/jpg', {
+    respondWithFile(res, fileName, 'image/jpeg', {
       'Link': '<' + location + '>; rel="http://restdesc.no.de/ontology#faces"; title="contained faces"; type="text/n3"'
     });
   }
@@ -179,7 +179,7 @@ function getFaces(req, res, next) {
           id + '/persons/' + personId;
 
       linkHeaders += (faceId > 1 ? ',\n      ' : '') + '<' + location1 +
-          '>; rel="related"; title="contained face"; type="image/jpg"' +
+          '>; rel="related"; title="contained face"; type="image/jpeg"' +
           ',\n      <' + location2 +
           '>; rel="related"; title="contained face"; type="text/plain"';
     }
@@ -197,9 +197,9 @@ function getFace(req, res, next) {
   var pathname = require('url').parse(req.url).pathname;
   var fileName = __dirname + pathname.replace(path, '/photos/$1_$2.jpg');
   var accept = req.header('Accept', '*/*');
-  if ((accept.indexOf('image/jpg') !== -1) ||
+  if ((accept.indexOf('image/jpeg') !== -1) ||
       (accept.indexOf('*/*') !== -1))
-    respondWithFile(res, fileName, 'image/jpg');
+    respondWithFile(res, fileName, 'image/jpeg');
   else
     res.send('', 406);
 }

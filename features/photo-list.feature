@@ -1,0 +1,8 @@
+Feature: photo-list
+	Clients should be able to get a list of photos
+
+	Scenario: GET photos returns a list of photos
+		Given there are 3 photos on the server
+		When I GET /photos
+		Then I should receive a list of 3 photos
+		And it should have MIME type text/html

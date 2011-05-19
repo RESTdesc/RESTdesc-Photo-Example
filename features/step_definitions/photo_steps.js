@@ -4,11 +4,22 @@ var Steps = require('cucumis').Steps,
     path = require('path'),
     fs = require('fs');
 
-Steps.Given(/^I have a photo with ID (\d+)$/, function (ctx, id) {
+Steps.Given(/^the server has a photo with ID (\d+)$/, function (ctx, id) {
   path.exists('photos/' + id + '.jpg', function (exists) {
     exists.should.be.ok;
     ctx.done();
-  })
+  });
+});
+
+Steps.Given(/^there are (\d+) photos on the server$/, function (ctx, count) {
+  var found = 0;
+	for(var i=1; i<=count; i++)
+	  path.exists('photos/' + i + '.jpg', function (exists) {
+	    exists.should.be.ok;
+	    found++;
+	    if(found==count)
+	      ctx.done();
+	  });
 });
 
 Steps.Then(/^I should receive photo (\d+)$/, function (ctx, id) {
@@ -17,6 +28,13 @@ Steps.Then(/^I should receive photo (\d+)$/, function (ctx, id) {
 	  stepsData.responseLength.should.eql(stat.size);
     ctx.done();
   });
+});
+
+Steps.Then(/^I should receive a list of (\d+) photos$/, function (ctx, count) {
+  for(var i=1; i<=count; i++)
+    stepsData.responseBody.should.match(
+      new RegExp('<a href="/photos/' + i + '" rel="http://xmlns.com/foaf/0.1/Image">/photos/' + i + '</a>'));
+	ctx.done();
 });
 
 Steps.export(module);

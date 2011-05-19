@@ -81,10 +81,10 @@ function optionsPhotos(req, res, next) {
       (accept.indexOf('*/*') !== -1)) {
     res.header('Content-Type', 'text/html; charset=utf-8');      
     message = 'These are your current OPTIONS:\n<ul>\n' +
-        '<li><a href="./photos" rel="self">./photos</a></li>\n' +
-        '<li><a href="./photos/1" rel="http://xmlns.com/foaf/0.1/Image">./photos/1</a></li>\n' +
-        '<li><a href="./photos/2" rel="http://xmlns.com/foaf/0.1/Image">./photos/2</a></li>\n' +            
-        '<li><a href="./photos/3" rel="http://xmlns.com/foaf/0.1/Image">./photos/3</a></li>\n' +                  
+        '<li><a href="/photos" rel="self">./photos</a></li>\n' +
+        '<li><a href="/photos/1" rel="http://xmlns.com/foaf/0.1/Image">/photos/1</a></li>\n' +
+        '<li><a href="/photos/2" rel="http://xmlns.com/foaf/0.1/Image">/photos/2</a></li>\n' +
+        '<li><a href="/photos/3" rel="http://xmlns.com/foaf/0.1/Image">/photos/3</a></li>\n' +
         '</ul>\n';
   } else if (accept.indexOf('text/n3') !== -1) {
     res.header('Content-Type', 'text/n3; charset=utf-8');        

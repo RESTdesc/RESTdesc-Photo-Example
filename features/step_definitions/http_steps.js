@@ -12,6 +12,13 @@ var port = 8200,
     client = http.createClient(port, host),
     response;
 
+// The HTTP client doesn't play nice with newlines in header contents, so avoid them in tests
+var res = http.ServerResponse.prototype,
+    oldSetHeader = res.setHeader;
+res.setHeader = function(name, val) {
+    oldSetHeader.call(this, name, typeof(val) === 'string' ? val.replace(/\n/g, ' ') : val);
+};
+
 Steps.Runner.on('beforeTest', function(done) {
 	server.start(port, host);
 	var linkTypesFile = 'features/step_definitions/link_types.json';
@@ -53,7 +60,7 @@ Steps.When(/^I (GET|HEAD|OPTIONS) (\/.*)$/, function (ctx, method, path) {
 
 Steps.Then(/^it should have MIME type (.*)$/, function (ctx, mimeType) {
   response.headers.should.include.keys('content-type');
-  response.headers['content-type'].should.eql(mimeType);
+  response.headers['content-type'].replace(/;.*/, '').should.eql(mimeType);
 	ctx.done();
 });
 

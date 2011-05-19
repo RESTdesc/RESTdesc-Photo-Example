@@ -3,7 +3,7 @@
 Sample implementation for the (upcoming) RESTdesc Web service description format.
 
 ## Running
-      $ node restdesc.js
+      $ node server.js
 
 ## Testing
       $ cucumis

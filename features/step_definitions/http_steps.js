@@ -1,5 +1,4 @@
 var Steps = require('cucumis').Steps,
-    server = require('../../server').server,
     path = require('path'),
     fs = require('fs'),
     http = require('http'),
@@ -8,6 +7,8 @@ var Steps = require('cucumis').Steps,
     
 var port = 8200,
     host = '127.0.0.1',
+    server,
+    serverName,
     linkTypes = {},
     client = http.createClient(port, host),
     response;
@@ -20,7 +21,6 @@ res.setHeader = function(name, val) {
 };
 
 Steps.Runner.on('beforeTest', function(done) {
-	server.start(port, host);
 	var linkTypesFile = 'features/step_definitions/link_types.json';
 	if(path.exists(linkTypesFile, function(exists) {
 	  if(exists)
@@ -34,8 +34,20 @@ Steps.Runner.on('beforeTest', function(done) {
 });
 
 Steps.Runner.on('afterTest', function(done) {
-	server.close();
+  if(server)
+	  server.close();
 	done();
+});
+
+Steps.Given(/^the (.+) server is running$/, function (ctx, name) {
+  if(serverName !== name) {
+    if(server)
+      server.close();
+    serverName = name;
+    server = require('../../' + serverName + '-server.js').server;
+    server.start(port, host);
+  }
+  ctx.done();
 });
 
 Steps.When(/^I (GET|HEAD|OPTIONS) (\/.*)$/, function (ctx, method, path) {

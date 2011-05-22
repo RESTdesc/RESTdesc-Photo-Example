@@ -72,7 +72,7 @@ function getPhotos(req, res, next) {
 }
 
 function optionsPhotos(req, res, next) {
-  res.header('Link', '<./>; rel=index; rel=self');
+  res.header('Link', '</photos>; rel="index"');
   res.header('Allow', 'GET, OPTIONS, POST');  
   var accept = req.header('Accept', '*/*');
   console.log('Accept: ' + accept);  

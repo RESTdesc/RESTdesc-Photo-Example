@@ -1,5 +1,6 @@
 {
   "face detection": { "rel": "http://restdesc.no.de/ontology#faces",
                       "title": "contained faces",
-                      "type":  "text/n3" }
+                      "type":  "text/n3" },
+  "index": { "rel": "index" }
 }

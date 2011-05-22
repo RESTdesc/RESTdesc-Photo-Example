@@ -69,16 +69,16 @@ Steps.Then(/^it should have MIME type (.*)$/, function (ctx, mimeType) {
 	ctx.done();
 });
 
-Steps.Then(/^I should receive a (.+) link to (\/.*)$/, function (ctx, linkName, path) {
+Steps.Then(/^I should receive an? (.+) link to (\/.*)$/, function (ctx, linkName, path) {
   linkTypes.should.include.keys(linkName);
   var linkType = linkTypes[linkName];
   
   response.headers.should.include.keys('link');
   var linkHeader = response.headers['link'];
   
-  var reLink = '^<' + RegExp.escape(path) + '>;\\s*rel="' + linkType.rel
-                 + '";\\s*title="' + linkType.title
-                 + '";\\s*type="' + linkType.type + '"$';
+  var reLink = '^<' + RegExp.escape(path) + '>;\\s*rel="' + linkType.rel + '"'
+                 + (linkType.title ? ';\\s*title="' + linkType.title + '"' : '')
+                 + (linkType.type  ?';\\s*type="'   + linkType.type  + '"' : '') + '$';
   
   linkHeader.should.match(new RegExp(reLink));
   ctx.done();

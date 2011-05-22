@@ -52,7 +52,7 @@ function getBase(req, res, next) {
 }
 
 function optionsBase(req, res, next) {  
-  res.header('Link', '<./>; rel=self,\n      <./photos>; rel=index; type=text/n3;charset=utf-8');
+  res.header('Link', '<./>; rel=self, <./photos>; rel=index; type=text/n3;charset=utf-8');
   res.header('Allow', 'GET, OPTIONS');
   var accept = req.header('Accept', '*/*');
   console.log('Accept: ' + accept);
@@ -72,7 +72,7 @@ function getPhotos(req, res, next) {
 }
 
 function optionsPhotos(req, res, next) {
-  res.header('Link', '<./>;\n      rel=index;\n      rel=self');
+  res.header('Link', '<./>; rel=index; rel=self');
   res.header('Allow', 'GET, OPTIONS, POST');  
   var accept = req.header('Accept', '*/*');
   console.log('Accept: ' + accept);  
@@ -178,7 +178,7 @@ function getFaces(req, res, next) {
       var personId = faceId;
       var location2 = '/photos/' + id + '/persons/' + personId;
 
-      linkHeaders += (faceId > 1 ? ',\n      ' : '') + '<' + location1 +
+      linkHeaders += '<' + location1 +
           '>; rel="related"; title="contained face"; type="image/jpeg"' +
           ',\n      <' + location2 +
           '>; rel="related"; title="contained face"; type="text/plain"';

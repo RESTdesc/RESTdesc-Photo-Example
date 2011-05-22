@@ -13,13 +13,6 @@ var port = 8200,
     client = http.createClient(port, host),
     response;
 
-// The HTTP client doesn't play nice with newlines in header contents, so avoid them in tests
-var res = http.ServerResponse.prototype,
-    oldSetHeader = res.setHeader;
-res.setHeader = function(name, val) {
-    oldSetHeader.call(this, name, typeof(val) === 'string' ? val.replace(/\n/g, ' ') : val);
-};
-
 Steps.Runner.on('beforeTest', function(done) {
 	var linkTypesFile = 'features/step_definitions/link_types.json';
 	if(path.exists(linkTypesFile, function(exists) {

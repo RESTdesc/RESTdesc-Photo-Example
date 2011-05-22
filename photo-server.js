@@ -64,12 +64,7 @@ function optionsBase(req, res, next) {
 }
 
 function getPhotos(req, res, next) {
-  optionsPhotos(req, res, next);  
-}
-
-function optionsPhotos(req, res, next) {
   res.header('Link', '</photos>; rel="index"');
-  res.header('Allow', 'GET, OPTIONS, POST');  
   var accept = req.header('Accept', '*/*');
   var message;
   if ((accept.indexOf('text/html') !== -1) ||
@@ -83,6 +78,23 @@ function optionsPhotos(req, res, next) {
         '</ul>\n';
   } else if (accept.indexOf('text/n3') !== -1) {
     res.header('Content-Type', 'text/n3; charset=utf-8');        
+    message = '</photos> = (\n'
+              + '  </photos/1>\n'
+              + '  </photos/2>\n'
+              + '  </photos/3>\n'
+              + ').\n';
+  }
+  res.send(message);
+}
+
+function optionsPhotos(req, res, next) {
+  res.header('Link', '</photos>; rel="index"');
+  res.header('Allow', 'GET, OPTIONS, POST');
+  var accept = req.header('Accept', '*/*');
+  var message;
+  if ((accept.indexOf('text/n3') !== -1) ||
+      (accept.indexOf('*/*') !== -1)) {
+    res.header('Content-Type', 'text/n3; charset=utf-8');
     message = '{\n' +
         '  ?photo a foaf:Image.\n' +
         '  } => {\n' +

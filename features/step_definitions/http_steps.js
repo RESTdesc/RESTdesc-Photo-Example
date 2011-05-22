@@ -11,6 +11,7 @@ var port = 8200,
     serverName,
     linkTypes = {},
     client = http.createClient(port, host),
+    headers = {},
     response;
 
 Steps.Runner.on('beforeTest', function(done) {
@@ -32,6 +33,11 @@ Steps.Runner.on('afterTest', function(done) {
 	done();
 });
 
+Steps.Runner.on('beforeScenario', function(done) {
+  headers = {};
+  done();
+});
+
 Steps.Given(/^the (.+) server is running$/, function (ctx, name) {
   if(serverName !== name) {
     if(server)
@@ -43,8 +49,13 @@ Steps.Given(/^the (.+) server is running$/, function (ctx, name) {
   ctx.done();
 });
 
+Steps.Given(/^I accept (.*)$/, function (ctx, mimeType) {
+  headers.accept = mimeType;
+	ctx.done();
+});
+
 Steps.When(/^I (GET|HEAD|OPTIONS) (\/.*)$/, function (ctx, method, path) {
-  var request = client.request(method, path)
+  var request = client.request(method, path, headers)
   request.end();
   request.on('response', function (resp) {
     var receivedLength = 0,

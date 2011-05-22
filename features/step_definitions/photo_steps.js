@@ -37,4 +37,11 @@ Steps.Then(/^I should receive a list of (\d+) photos$/, function (ctx, count) {
 	ctx.done();
 });
 
+Steps.Then(/^I should receive an N3 list of (\d+) photos$/, function (ctx, count) {
+  for(var i=1; i<=count; i++)
+    stepsData.responseBody.should.match(
+      new RegExp('</photos/' + i + '>'));
+	ctx.done();
+});
+
 Steps.export(module);

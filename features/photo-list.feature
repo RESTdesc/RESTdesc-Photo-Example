@@ -13,3 +13,10 @@ Feature: photo-list
 	Scenario: GET photos links to itself as index
 		When I GET /photos
 		Then I should receive an index link to /photos
+
+	Scenario: GET photos returns an N3 list of photos
+		Given there are 3 photos on the server
+		And I accept text/n3
+		When I GET /photos
+		Then I should receive an N3 list of 3 photos
+		And it should have MIME type text/n3

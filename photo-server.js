@@ -45,12 +45,7 @@ app.start = function(port, host) {
 }
 
 function getBase(req, res, next) {
-  optionsBase(req, res, next);  
-}
-
-function optionsBase(req, res, next) {  
-  res.header('Link', '<./>; rel=self, <./photos>; rel=index; type=text/n3;charset=utf-8');
-  res.header('Allow', 'GET, OPTIONS');
+  res.header('Link', '</photos>; rel="index"');
   var accept = req.header('Accept', '*/*');
   var message;
   if ((accept.indexOf('text/html') !== -1) ||
@@ -60,6 +55,12 @@ function optionsBase(req, res, next) {
         '<li><a href="./photos">./photos</a></li>\n' +
         '</ul>\n';
   }
+  res.send(message, 200);
+}
+
+function optionsBase(req, res, next) {
+  res.header('Link', '</photos>; rel="index"');
+  res.header('Allow', 'GET, OPTIONS, HEAD');
   res.send(message, 200);  
 }
 

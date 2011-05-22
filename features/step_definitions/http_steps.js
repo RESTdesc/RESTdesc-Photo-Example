@@ -68,7 +68,8 @@ Steps.When(/^I (GET|HEAD|OPTIONS) (\/.*)$/, function (ctx, method, path) {
       receivedLength += chunk.length;
     });
     response.on('end', function() {
-      stepsData.responseBody = responseBodyBuffer.toString('utf8');
+      stepsData.responseBody = !responseBodyBuffer.length ? ''
+                                   : responseBodyBuffer.toString('utf8');
       ctx.done();
     })
   });

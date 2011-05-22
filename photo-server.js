@@ -37,12 +37,9 @@ app.get(/^\/photos\/\d+\/faces\/\d+$/, getFace);
 
 app.get(/^\/photos\/\d+\/persons\/\d+$/, getPerson);
 
-var port;
-var host;
-
-app.start = function(serverPort, serverHost) {
-  port = serverPort || 8001;
-  host = serverHost || '127.0.0.1';
+app.start = function(port, host) {
+  port = port || 8001;
+  host = host || '127.0.0.1';
   this.listen(port);
   console.log('node.JS running on http://' + host + ':' + port);
 }

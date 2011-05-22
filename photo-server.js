@@ -55,7 +55,6 @@ function optionsBase(req, res, next) {
   res.header('Link', '<./>; rel=self, <./photos>; rel=index; type=text/n3;charset=utf-8');
   res.header('Allow', 'GET, OPTIONS');
   var accept = req.header('Accept', '*/*');
-  console.log('Accept: ' + accept);
   var message;
   if ((accept.indexOf('text/html') !== -1) ||
       (accept.indexOf('*/*') !== -1)) {
@@ -75,7 +74,6 @@ function optionsPhotos(req, res, next) {
   res.header('Link', '</photos>; rel="index"');
   res.header('Allow', 'GET, OPTIONS, POST');  
   var accept = req.header('Accept', '*/*');
-  console.log('Accept: ' + accept);  
   var message;
   if ((accept.indexOf('text/html') !== -1) ||
       (accept.indexOf('*/*') !== -1)) {
@@ -106,7 +104,6 @@ function getPhoto(req, res, next) {
   var pathname = require('url').parse(req.url).pathname;
   var id = pathname.replace(path, '$1');
   var accept = req.header('Accept', '*/*');
-  console.log('Accept: ' + accept);
   if ((accept.indexOf('image/jpeg') !== -1) ||
       (accept.indexOf('*/*') !== -1)) {
     var location = '/photos/' + id + '/faces';
@@ -125,7 +122,6 @@ function optionsPhoto(req, res, next) {
   var id = pathname.replace(path, '$1');
   var accept = req.header('Accept', '*/*');
   res.header('Allow', 'GET, OPTIONS, POST');
-  console.log('Accept: ' + accept);
   if ((accept.indexOf('image/jpeg') !== -1) ||
       (accept.indexOf('*/*') !== -1)) {
     var location = '/photos/' + id + '/faces';
@@ -151,7 +147,6 @@ function postPhoto(req, res, next) {
       } else {
         return res.send('', 412);
       }
-      console.log('Photo ID ' + id);
       var location = '/photos/' + id;
       res.header('Location', location)
       res.header('Content-Type', 'text/html');

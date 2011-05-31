@@ -44,4 +44,10 @@ Steps.Then(/^I should receive an N3 list of (\d+) photos$/, function (ctx, count
 	ctx.done();
 });
 
+Steps.Then(/^I should receive a link to photo (\d+)$/, function (ctx, id) {
+  stepsData.responseBody.should.match(
+    new RegExp('<a href="/photos/' + id + '">'));
+	ctx.done();
+});
+
 Steps.export(module);

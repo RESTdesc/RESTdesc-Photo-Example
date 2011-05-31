@@ -55,8 +55,30 @@ Steps.Given(/^I accept (.*)$/, function (ctx, mimeType) {
 });
 
 Steps.When(/^I (GET|HEAD|OPTIONS) (\/.*)$/, function (ctx, method, path) {
-  var request = client.request(method, path, headers)
+  var request = client.request(method, path, headers);
   request.end();
+  handleResponse(ctx, request);
+});
+
+Steps.When(/^I POST the file (.*) as (.*) to (\/.*)$/, function (ctx, file, name, path) {
+  fs.stat(file, function(err, stat) {
+    headers['Content-Type'] = 'multipart/form-data; boundary=1234';
+    headers['Expect'] = '100-continue';
+    var request = client.request('POST', path, headers);
+    request.on('continue', function() {
+      request.write('--1234\r\n'
+                    + 'Content-Disposition: form-data; name="' + name
+                    + '"; filename="' + file + '"\r\n'
+                    + 'Content-Type: text/plain\r\n\r\n'
+                    + 'contents\r\n\r\n'
+                    + '--1234--\r\n');
+      request.end();
+      handleResponse(ctx, request);
+    });
+  });
+});
+
+function handleResponse(ctx, request) {
   request.on('response', function (resp) {
     var receivedLength = 0,
         responseLength = stepsData.responseLength = parseInt(resp.headers['content-length']),
@@ -73,7 +95,7 @@ Steps.When(/^I (GET|HEAD|OPTIONS) (\/.*)$/, function (ctx, method, path) {
       ctx.done();
     })
   });
-});
+}
 
 Steps.Then(/^it should have MIME type (.*)$/, function (ctx, mimeType) {
   response.headers.should.include.keys('content-type');
@@ -94,6 +116,16 @@ Steps.Then(/^I should receive an? (.+) link to (\/.*)$/, function (ctx, linkName
   
   linkHeader.should.match(new RegExp(reLink));
   ctx.done();
+});
+
+Steps.Then(/^the response status should be (\d+).*$/, function (ctx, code) {
+  response.statusCode.should.eql(code);
+	ctx.done();
+});
+
+Steps.Then(/^the response location should be (.*)$/, function (ctx, path) {
+  response.headers.location.should.eql(path);
+	ctx.done();
 });
 
 Steps.export(module);

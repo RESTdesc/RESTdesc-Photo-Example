@@ -20,3 +20,9 @@ Feature: faces-get
 		When I GET /photos/1/faces
 		Then I should receive a face recognition link to /photos/1/persons/1
 		Then I should receive a face recognition link to /photos/1/persons/2
+
+	Scenario: GET photo face returns face
+		Given the server has a photo with ID 1
+		When I GET /photos/1/faces/1
+		Then I should receive face 1 of photo 1
+		And it should have MIME type image/jpeg

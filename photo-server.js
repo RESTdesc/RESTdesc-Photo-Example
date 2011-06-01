@@ -186,7 +186,7 @@ function getFaces(req, res, next) {
       linkHeaders += (faceId > 1 ? ',     ' : '') + '<' + location1 +
           '>; rel="related"; title="contained face"; type="image/jpeg"' +
           ', <' + location2 +
-          '>; rel="related"; title="contained face"; type="text/plain"';
+          '>; rel="related"; title="depicted person"; type="text/n3"';
     }
     var fileName= __dirname + '/photos/' + id + '.n3';
     respondWithFile(res, fileName, 'text/n3', {

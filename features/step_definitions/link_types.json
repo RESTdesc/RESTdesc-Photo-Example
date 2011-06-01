@@ -3,7 +3,10 @@
                       "title": "contained faces",
                       "type":  "text/n3" },
   "index": { "rel": "index" },
-  "face":  { "rel": "related",
-             "title": "contained face",
-             "type": "image/jpeg" }
+  "face": { "rel": "related",
+            "title": "contained face",
+            "type": "image/jpeg" },
+  "face recognition": { "rel": "related",
+                        "title": "depicted person",
+                        "type": "text/n3" }
 }

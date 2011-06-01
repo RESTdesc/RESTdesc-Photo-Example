@@ -102,21 +102,24 @@ function getPerson(req, res, next) {
 }
 
 function getDescription(req, res, next) {
-  var pattern = new RegExp(req.params[0].replace(/\//g, '-').replace(/\d+/g, 'id') + '.*');
+  var uriPattern = new RegExp(req.params[0].replace(/\//g, '-')
+                                           .replace(/\d+/g, 'id') + '.*');
   fs.readdir('descriptions', function (err, fileNames) {
-    if(err)
-      throw err;
-    fileNames = fileNames.filter(function (file) { return file.match(pattern); })
+    if(err) throw err;
+    fileNames = fileNames.filter(function (file) { return file.match(uriPattern); })
                          .sort(function (a,b) { return b.length - a.length; });
     if(!fileNames.length)
       return res.send(404);
     
     readFiles('descriptions', fileNames, function (files) {
-      res.send(joinN3Documents(files));
+      res.header('Allow', 'GET,HEAD,POST,OPTIONS');
+      respond.withText(res, joinN3Documents(files), 'text/n3');
     });
   });
-  res.header('Allow', 'GET,HEAD,POST,OPTIONS');
 }
+
+
+/***    helpers    ***/
 
 function readFiles(directory, fileNames, callback) {
   var files = [];
@@ -127,12 +130,11 @@ function readFiles(directory, fileNames, callback) {
         callback(files);
     });
   });
-  return files;
 }
 
 function joinN3Documents(documents) {
-  var result = '', namespaces = '', usedNamespaces = {},
-      triples = '', match, prefixMatcher = /^@prefix.*\.$\n/gm;
+  var namespaces = '', usedNamespaces = {}, triples = '',
+      match, prefixMatcher = /^@prefix.*\.$\n/gm;
   documents.forEach(function (document) {
     while((match = prefixMatcher.exec(document)) && (match = match[0]))
       if(!usedNamespaces[match])

@@ -4,6 +4,11 @@ var fs = require('fs'),
 
 var respond = exports.respond = {};
 
+respond.withText = function (res, text, contentType) {
+  res.header('Content-Type', contentType);
+  res.send(text);
+}
+
 respond.withFile = function (res, fileName, contentType, headers) {
   fs.readFile(fileName, function (err, data) {
     if (err) {

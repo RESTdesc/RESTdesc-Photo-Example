@@ -110,9 +110,9 @@ Steps.Then(/^I should receive an? (.+) link to (\/.*)$/, function (ctx, linkName
   response.headers.should.include.keys('link');
   var linkHeader = response.headers['link'];
   
-  var reLink = '^<' + RegExp.escape(path) + '>;\\s*rel="' + linkType.rel + '"'
+  var reLink = '(^|,)\\s*<' + RegExp.escape(path) + '>;\\s*rel="' + linkType.rel + '"'
                  + (linkType.title ? ';\\s*title="' + linkType.title + '"' : '')
-                 + (linkType.type  ?';\\s*type="'   + linkType.type  + '"' : '') + '$';
+                 + (linkType.type  ?';\\s*type="'   + linkType.type  + '"' : '') + '($|,)';
   
   linkHeader.should.match(new RegExp(reLink));
   ctx.done();

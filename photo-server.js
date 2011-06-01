@@ -183,9 +183,9 @@ function getFaces(req, res, next) {
       var personId = faceId;
       var location2 = '/photos/' + id + '/persons/' + personId;
 
-      linkHeaders += '<' + location1 +
+      linkHeaders += (faceId > 1 ? ',     ' : '') + '<' + location1 +
           '>; rel="related"; title="contained face"; type="image/jpeg"' +
-          ',\n      <' + location2 +
+          ', <' + location2 +
           '>; rel="related"; title="contained face"; type="text/plain"';
     }
     var fileName= __dirname + '/photos/' + id + '.n3';

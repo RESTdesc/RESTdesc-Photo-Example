@@ -7,6 +7,7 @@
 var formidable = require('formidable'),
     express = require('express'),
     url = require('url'),
+    fs = require('fs'),
     respond = require('./server-util.js').respond,
     querystring = require('querystring'),
     photos = require('./photo-library.js').Photos;
@@ -49,6 +50,7 @@ app.get(/^\/photos\/(\d+)$/, getPhoto);
 app.get(/^\/photos\/(\d+)\/faces$/, getFaces);
 app.get(/^\/photos\/(\d+)\/faces\/(\d+)$/, getFace);
 app.get(/^\/photos\/(\d+)\/persons\/(\d+)$/, getPerson);
+app.options(/^\/([\d\w\/]+)$/, getDescription);
 
 
 /***    handlers    ***/
@@ -97,4 +99,45 @@ function getFace(req, res, next) {
 function getPerson(req, res, next) {
   var face = photos.get(req.params[0]).faces.get(req.params[1]);
   respond.withFile(res, face.personFileName, 'text/plain');
+}
+
+function getDescription(req, res, next) {
+  var pattern = new RegExp(req.params[0].replace(/\//g, '-').replace(/\d+/g, 'id') + '.*');
+  fs.readdir('descriptions', function (err, fileNames) {
+    if(err)
+      throw err;
+    fileNames = fileNames.filter(function (file) { return file.match(pattern); })
+                         .sort(function (a,b) { return b.length - a.length; });
+    if(!fileNames.length)
+      return res.send(404);
+    
+    readFiles('descriptions', fileNames, function (files) {
+      res.send(joinN3Documents(files));
+    });
+  });
+  res.header('Allow', 'GET,HEAD,POST,OPTIONS');
+}
+
+function readFiles(directory, fileNames, callback) {
+  var files = [];
+  fileNames.forEach(function (fileName) {
+    fs.readFile(directory + '/' + fileName, 'utf-8', function (err, data) {
+      files.push(data);
+      if(files.length == fileNames.length)
+        callback(files);
+    });
+  });
+  return files;
+}
+
+function joinN3Documents(documents) {
+  var result = '', namespaces = '', usedNamespaces = {},
+      triples = '', match, prefixMatcher = /^@prefix.*\.$\n/gm;
+  documents.forEach(function (document) {
+    while((match = prefixMatcher.exec(document)) && (match = match[0]))
+      if(!usedNamespaces[match])
+        namespaces += (usedNamespaces[match] = match);
+    triples += document.replace(prefixMatcher, '');
+  });
+  return namespaces + triples;
 }

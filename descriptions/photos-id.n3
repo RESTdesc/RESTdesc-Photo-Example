@@ -1,0 +1,14 @@
+@prefix : <http://a.example.org/ontology#>.
+@prefix http: <http://www.w3.org/2006/http#>.
+@prefix tmpl: <http://purl.org/restdesc/http-template#>.
+@prefix foaf: <http://xmlns.com/foaf/>.
+
+{
+  ?photo :photoId ?photoId.
+}
+=>
+{
+  _:request http:methodName "GET";
+            tmpl:requestURI ("http://a.example.org/photos/" ?photoId);
+            http:resp [ tmpl:represents ?photo ].
+}.

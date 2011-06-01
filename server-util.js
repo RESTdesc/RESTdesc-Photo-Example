@@ -8,10 +8,8 @@ respond.withFile = function (res, fileName, contentType, headers) {
   fs.readFile(fileName, function (err, data) {
     if (err) {
       if(err.code == 'ENOENT') {
-        res.send('', 404);
-        return false;
+        return res.send('', 404);
       }
-      res.send(500);
       throw err;
     }
     res.header('Content-Type', contentType);
@@ -19,7 +17,6 @@ respond.withFile = function (res, fileName, contentType, headers) {
       for(name in headers)
         res.header(name, headers[name]);
     res.send(data);
-    return true;
   });
 };
 

@@ -14,8 +14,8 @@ function Photo(id) {
 function Face(photo, id) {
   Object.defineProperties(this, {
     id: { value: id },
-    fileName: { get: function() { return 'photos/' + photo.id + '_' + id + '.jpg'; } },
-    personFileName: { get: function() { return 'photos/' + photo.id + '_' + id + '.txt'; } },
+    fileName: { get: function() { return 'photos/faces/' + photo.id + '_' + id + '.jpg'; } },
+    personFileName: { get: function() { return 'photos/persons/' + photo.id + '_' + id + '.txt'; } },
     url: { get: function() { return photo.url + '/faces/' + id; } },
     personUrl: { get: function() { return photo.url + '/persons/' + id; } }
   });
@@ -25,7 +25,7 @@ function Faces(photo) {
   var faces, faceCount = 0;
   
   Object.defineProperties(this, {
-    fileName: { get: function() { return 'photos/' + photo.id + '.n3'; } },
+    fileName: { get: function() { return 'photos/faces/' + photo.id + '.n3'; } },
     length: { get: function() { this.all(); return faceCount; } },
     url: { get: function() { return photo.url + '/faces'; } }
   });
@@ -33,7 +33,7 @@ function Faces(photo) {
   this.all = function () {
     if(!faces) {
       faces = {};
-      var files = fs.readdirSync('photos'), result, id;
+      var files = fs.readdirSync('photos/faces'), result, id;
       files.forEach(function (file) {
         if((result = /^(\d+)_(\d+)\.jpg$/.exec(file)) && (result[1] == photo.id)) {
           faces[id = result[2]] = new Face(photo, id);

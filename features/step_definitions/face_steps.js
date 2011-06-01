@@ -10,7 +10,7 @@ Steps.Then(/^I should receive a list of (\d+) faces$/, function (ctx, count) {
 });
 
 Steps.Then(/^I should receive face (\d+) of photo (\d+)$/, function (ctx, faceId, photoId) {
-	fs.stat('photos/' + photoId + '_' + faceId + '.jpg', function(err, stat) {
+	fs.stat('photos/faces/' + photoId + '_' + faceId + '.jpg', function(err, stat) {
 	  // just compare file size for now
 	  stepsData.responseLength.should.eql(stat.size);
     ctx.done();

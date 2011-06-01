@@ -1,4 +1,0 @@
-@prefix foaf: <http://xmlns.com/foaf/0.1/>.
-@prefix dbpedia:	<http://dbpedia.org/resource/>.
-<http://organon.elis.ugent.be/assets/photos/obama-gillard.jpg#xywh=117,224,82,92> foaf:depicts dbpedia:Barack_Obama.
-<http://organon.elis.ugent.be/assets/photos/obama-gillard.jpg#xywh=790,269,85,82> foaf:depicts dbpedia:Julia_Gillard.

@@ -31,7 +31,7 @@ app.post(/^\/photos$/, postPhoto);
 app.get(/^\/photos\/(\d+)$/, getPhoto);
 app.options(/^\/photos\/(\d+)$/, optionsPhoto);
 
-app.get(/^\/photos\/\d+\/faces$/, getFaces);
+app.get(/^\/photos\/(\d+)\/faces$/, getFaces);
 
 app.get(/^\/photos\/\d+\/faces\/\d+$/, getFace);
 
@@ -113,31 +113,12 @@ function postPhoto(req, res, next) {
 }
 
 function getFaces(req, res, next) {
-  var path = /^\/photos\/(\d+)\/faces$/;
-  var pathname = url.parse(req.url).pathname;
-  var id = pathname.replace(path, '$1');
-  var accept = req.header('Accept', '*/*');
-  if ((accept.indexOf('text/n3') !== -1) ||
-      (accept.indexOf('*/*') !== -1)) {
-    var relatedCount = {'1': 2, '2': 4, '3': 6}[id] || 0;
-    var linkHeaders = '';
-    for(var faceId = 1; faceId <= relatedCount; faceId++) {
-      var location1 = '/photos/' + id + '/faces/' + faceId;
-      var personId = faceId;
-      var location2 = '/photos/' + id + '/persons/' + personId;
-
-      linkHeaders += (faceId > 1 ? ',     ' : '') + '<' + location1 +
-          '>; rel="related"; title="contained face"; type="image/jpeg"' +
-          ', <' + location2 +
-          '>; rel="related"; title="depicted person"; type="text/n3"';
-    }
-    var fileName= __dirname + '/photos/' + id + '.n3';
-    respond.withFile(res, fileName, 'text/n3', {
-      'Link': linkHeaders
-    });
-  }
-  else
-    res.send('', 406);
+  var photo = photos.get(req.params[0]),
+      linkHeaders = photo.faces.map(function (face) {
+    return '<' + face.url + '>; rel="related"; title="contained face"; type="image/jpeg"'
+       + ', <' + face.personUrl +'>; rel="related"; title="depicted person"; type="text/n3"';
+  });
+  respond.withFile(res, photo.faces.fileName, 'text/n3', { 'Link': linkHeaders.join() });
 }
 
 function getFace(req, res, next) {

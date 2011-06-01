@@ -1,4 +1,4 @@
 @prefix foaf: <http://xmlns.com/foaf/0.1/>.
 @prefix dbpedia: <http://dbpedia.org/resource/>.
-</photos/obama-kenny.jpg#xywh=140,129,176,195> foaf:depicts dbpedia:Enda_Kenny;
-                                                        foaf:name "Enda Kenny".
+</photos/2#xywh=140,129,176,195> foaf:depicts dbpedia:Enda_Kenny;
+                                 foaf:name "Enda Kenny".

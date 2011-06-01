@@ -1,4 +1,4 @@
 @prefix foaf: <http://xmlns.com/foaf/0.1/>.
 @prefix dbpedia: <http://dbpedia.org/resource/>.
-</photos/obama-rousseff.jpg#xywh=499,95,34,41> foaf:depicts dbpedia:Malia_Obama;
-                                                        foaf:name "Malia Obama".
+</photos/3#xywh=499,95,34,41> foaf:depicts dbpedia:Malia_Obama;
+                              foaf:name "Malia Obama".

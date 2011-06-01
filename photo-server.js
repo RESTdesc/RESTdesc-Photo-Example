@@ -1,6 +1,7 @@
 var formidable = require('formidable'),
     express = require('express'),
     fs = require('fs'),
+    path = require('path'),
     ejs = require('ejs'),
     querystring = require('querystring'),
     photos = require('./photo-library.js').Photos;
@@ -66,16 +67,7 @@ function optionsBase(req, res, next) {
 
 function getPhotos(req, res, next) {
   res.header('Link', '</photos>; rel="index"');
-  var accept = req.header('Accept', '*/*');
-  var message;
-  if ((accept.indexOf('text/html') !== -1) ||
-      (accept.indexOf('*/*') !== -1)) {
-    res.header('Content-Type', 'text/html; charset=utf-8');      
-    respondWithTemplate(res, 'photos.html', { photos: photos.all() });
-  } else if (accept.indexOf('text/n3') !== -1) {
-    res.header('Content-Type', 'text/n3; charset=utf-8');        
-    respondWithTemplate(res, 'photos.n3', { photos: photos.all() });
-  }
+  respondWithTemplate(req, res, 'photos', { photos: photos.all() });
 }
 
 function optionsPhotos(req, res, next) {
@@ -232,9 +224,28 @@ function respondWithFile(res, fileName, contentType, headers) {
   });
 }
 
-function respondWithTemplate(res, template, locals) {
-  fs.readFile('templates/' + template + '.ejs', 'utf-8', function (err, data) {
-    var result = ejs.render(data, { locals: locals || {} });
-    res.send(result);
-  });
+function respondWithTemplate(req, res, template, locals) {
+  var accepts = req.header('Accept', '*/*').split(',');
+  function tryToRespond() {
+    var accept = accepts.shift(),
+        format = (accept == '*/*' ? 'text/html' : accept),
+        extension = format.split('/')[1],
+        templateFile = 'templates/' + template + '.' + extension + '.ejs';
+    path.exists(templateFile, function (exists) {
+      if(exists) {
+        fs.readFile(templateFile, 'utf-8', function (err, data) {
+          var result = ejs.render(data, { locals: locals || {} });
+          res.header('Content-Type', format + '; charset=utf-8')
+          res.send(result);
+        });
+      }
+      else {
+        if (accepts.length)
+          tryToRespond();
+        else
+          res.send('', 406);
+      }
+    });
+  };
+  tryToRespond();
 }

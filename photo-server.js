@@ -105,32 +105,13 @@ function optionsPhoto(req, res, next) {
 }
 
 function postPhoto(req, res, next) {
-  var form = new formidable.IncomingForm();
-  form.parse(req, function(err, fields, files) {    
-    //res.write('received upload:\n\n');
-    //res.end(sys.inspect({fields: fields, files: files}));
-    var file = files.photo && files.photo.name;
-    var id;
-    if (file) {
-      if (file === 'obama-gillard.jpg') {
-        id = 1;
-      } else if (file === 'obama-kenny.jpg') {
-        id = 2;
-      } else if (file === 'obama-rousseff.jpg') {
-        id = 3;
-      } else {
-        return res.send('', 412);
-      }
-      var location = '/photos/' + id;
-      res.header('Location', location)
-      res.header('Content-Type', 'text/html');
-      res.send('Your photo was uploaded: <a href="' + location + '">' +
-          location + '</a>\n', 201);
-    } else {
-      next();
-    }    
+  formidable.IncomingForm().parse(req, function(err, fields, files) {
+    if (!(files.photo && files.photo.name))
+      return next();
+    var photo = photos.create(files.photo.name);
+    res.header('Location', photo.url);
+    respondWithTemplate(req, res, 'photo-post', { photo: photo }, 201); 
   });
-  return; 
 }
 
 function getFaces(req, res, next) {
@@ -206,7 +187,7 @@ function respondWithFile(res, fileName, contentType, headers) {
   });
 }
 
-function respondWithTemplate(req, res, template, locals) {
+function respondWithTemplate(req, res, template, locals, statusCode) {
   var accepts = req.header('Accept', '*/*').split(',');
   function tryToRespond() {
     var accept = accepts.shift(),
@@ -218,7 +199,7 @@ function respondWithTemplate(req, res, template, locals) {
         fs.readFile(templateFile, 'utf-8', function (err, data) {
           var result = ejs.render(data, { locals: locals || {} });
           res.header('Content-Type', format + '; charset=utf-8')
-          res.send(result);
+          res.send(result, statusCode);
         });
       }
       else {

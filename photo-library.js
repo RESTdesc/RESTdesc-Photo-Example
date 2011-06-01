@@ -14,6 +14,7 @@ function Photo(id) {
 function Face(photo, id) {
   Object.defineProperties(this, {
     id: { value: id },
+    fileName: { get: function() { return 'photos/' + photo.id + '_' + id + '.jpg'; } },
     url: { get: function() { return photo.url + '/faces/' + id; } },
     personUrl: { get: function() { return photo.url + '/persons/' + id; } }
   });

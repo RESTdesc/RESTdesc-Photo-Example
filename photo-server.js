@@ -33,7 +33,7 @@ app.options(/^\/photos\/(\d+)$/, optionsPhoto);
 
 app.get(/^\/photos\/(\d+)\/faces$/, getFaces);
 
-app.get(/^\/photos\/\d+\/faces\/\d+$/, getFace);
+app.get(/^\/photos\/(\d+)\/faces\/(\d+)$/, getFace);
 
 app.get(/^\/photos\/\d+\/persons\/\d+$/, getPerson);
 
@@ -122,15 +122,8 @@ function getFaces(req, res, next) {
 }
 
 function getFace(req, res, next) {
-  var path = /^\/photos\/(\d+)\/faces\/(\d+)$/;
-  var pathname = url.parse(req.url).pathname;
-  var fileName = __dirname + pathname.replace(path, '/photos/$1_$2.jpg');
-  var accept = req.header('Accept', '*/*');
-  if ((accept.indexOf('image/jpeg') !== -1) ||
-      (accept.indexOf('*/*') !== -1))
-    respond.withFile(res, fileName, 'image/jpeg');
-  else
-    res.send('', 406);
+  var face = photos.get(req.params[0]).faces.get(req.params[1]);
+  respond.withFile(res, face.fileName, 'image/jpeg');
 }
 
 function getPerson(req, res, next) {

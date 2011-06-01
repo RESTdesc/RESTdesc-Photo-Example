@@ -1,6 +1,6 @@
-@prefix : </restdesc/ontology#>.
+@prefix : </ontology#>.
 @prefix foaf: <http://xmlns.com/foaf/0.1/>.
-</restdesc/photos/obama-kenny.jpg#xywh=140,129,176,195> :regionId 1; :belongsTo </restdesc/photos/obama-kenny.jpg>; foaf:depicts [ a foaf:Person ].
-</restdesc/photos/obama-kenny.jpg#xywh=117,224,82,92>   :regionId 2; :belongsTo </restdesc/photos/obama-kenny.jpg>; foaf:depicts [ a foaf:Person ].
-</restdesc/photos/obama-kenny.jpg#xywh=611,134,118,132> :regionId 3; :belongsTo </restdesc/photos/obama-kenny.jpg>; foaf:depicts [ a foaf:Person ].
-</restdesc/photos/obama-kenny.jpg#xywh=722,89,144,173>  :regionId 4; :belongsTo </restdesc/photos/obama-kenny.jpg>; foaf:depicts [ a foaf:Person ].
+</photos/obama-kenny.jpg#xywh=140,129,176,195> :regionId 1; :belongsTo </photos/obama-kenny.jpg>; foaf:depicts [ a foaf:Person ].
+</photos/obama-kenny.jpg#xywh=117,224,82,92>   :regionId 2; :belongsTo </photos/obama-kenny.jpg>; foaf:depicts [ a foaf:Person ].
+</photos/obama-kenny.jpg#xywh=611,134,118,132> :regionId 3; :belongsTo </photos/obama-kenny.jpg>; foaf:depicts [ a foaf:Person ].
+</photos/obama-kenny.jpg#xywh=722,89,144,173>  :regionId 4; :belongsTo </photos/obama-kenny.jpg>; foaf:depicts [ a foaf:Person ].

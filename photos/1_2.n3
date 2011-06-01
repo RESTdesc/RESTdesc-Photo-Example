@@ -1,4 +1,4 @@
 @prefix foaf: <http://xmlns.com/foaf/0.1/>.
 @prefix dbpedia: <http://dbpedia.org/resource/>.
-</restdesc/photos/obama-gillard.jpg#xywh=790,269,85,82> foaf:depicts dbpedia:Julia_Gillard;
+</photos/obama-gillard.jpg#xywh=790,269,85,82> foaf:depicts dbpedia:Julia_Gillard;
                                                         foaf:name "Julia Gillard".

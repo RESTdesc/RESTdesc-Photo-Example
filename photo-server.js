@@ -47,16 +47,7 @@ app.start = function(port, host) {
 
 function getBase(req, res, next) {
   res.header('Link', '</photos>; rel="index"');
-  var accept = req.header('Accept', '*/*');
-  var message;
-  if ((accept.indexOf('text/html') !== -1) ||
-      (accept.indexOf('*/*') !== -1)) {
-    res.header('Content-Type', 'text/html; charset=utf-8');    
-    message = 'These are your current OPTIONS:\n<ul>\n' +
-        '<li><a href="./photos">./photos</a></li>\n' +
-        '</ul>\n';
-  }
-  res.send(message, 200);
+  respondWithTemplate(req, res, 'base');
 }
 
 function optionsBase(req, res, next) {

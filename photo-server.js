@@ -1,9 +1,9 @@
-var DEBUG = false;
-
-var formidable = require('formidable');
-var express = require('express');
-var fs = require('fs');
-var querystring = require('querystring');
+var formidable = require('formidable'),
+    express = require('express'),
+    fs = require('fs'),
+    ejs = require('ejs'),
+    querystring = require('querystring'),
+    photos = require('./photo-library.js').Photos;
 
 var app = exports.server = express.createServer();
 
@@ -71,21 +71,11 @@ function getPhotos(req, res, next) {
   if ((accept.indexOf('text/html') !== -1) ||
       (accept.indexOf('*/*') !== -1)) {
     res.header('Content-Type', 'text/html; charset=utf-8');      
-    message = 'These are your current OPTIONS:\n<ul>\n' +
-        '<li><a href="/photos" rel="self">/photos</a></li>\n' +
-        '<li><a href="/photos/1" rel="http://xmlns.com/foaf/0.1/Image">/photos/1</a></li>\n' +
-        '<li><a href="/photos/2" rel="http://xmlns.com/foaf/0.1/Image">/photos/2</a></li>\n' +
-        '<li><a href="/photos/3" rel="http://xmlns.com/foaf/0.1/Image">/photos/3</a></li>\n' +
-        '</ul>\n';
+    respondWithTemplate(res, 'photos.html', { photos: photos.all() });
   } else if (accept.indexOf('text/n3') !== -1) {
     res.header('Content-Type', 'text/n3; charset=utf-8');        
-    message = '</photos> = (\n'
-              + '  </photos/1>\n'
-              + '  </photos/2>\n'
-              + '  </photos/3>\n'
-              + ').\n';
+    respondWithTemplate(res, 'photos.n3', { photos: photos.all() });
   }
-  res.send(message);
 }
 
 function optionsPhotos(req, res, next) {
@@ -239,5 +229,12 @@ function respondWithFile(res, fileName, contentType, headers) {
         res.header(name, headers[name]);
     res.send(data);
     return true;
+  });
+}
+
+function respondWithTemplate(res, template, locals) {
+  fs.readFile('templates/' + template + '.ejs', 'utf-8', function (err, data) {
+    var result = ejs.render(data, { locals: locals || {} });
+    res.send(result);
   });
 }

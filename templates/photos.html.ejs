@@ -1,0 +1,7 @@
+These are your current OPTIONS:
+<ul>
+<li><a href="/photos" rel="self">/photos</a></li>
+<% for(var id in photos) { %>
+<li><a href="/photos/<%= id %>" rel="http://xmlns.com/foaf/0.1/Image">/photos/<%= id %></a></li>
+<% } %>
+</ul>

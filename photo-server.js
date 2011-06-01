@@ -1,9 +1,7 @@
 var formidable = require('formidable'),
     express = require('express'),
-    fs = require('fs'),
-    path = require('path'),
-    ejs = require('ejs'),
     url = require('url'),
+    respond = require('./server-util.js').respond,
     querystring = require('querystring'),
     photos = require('./photo-library.js').Photos;
 
@@ -48,7 +46,7 @@ app.start = function(port, host) {
 
 function getBase(req, res, next) {
   res.header('Link', '</photos>; rel="index"');
-  respondWithTemplate(req, res, 'base');
+  respond.withTemplate(req, res, 'base');
 }
 
 function optionsBase(req, res, next) {
@@ -59,7 +57,7 @@ function optionsBase(req, res, next) {
 
 function getPhotos(req, res, next) {
   res.header('Link', '</photos>; rel="index"');
-  respondWithTemplate(req, res, 'photos', { photos: photos.all() });
+  respond.withTemplate(req, res, 'photos', { photos: photos.all() });
 }
 
 function optionsPhotos(req, res, next) {
@@ -85,7 +83,7 @@ function optionsPhotos(req, res, next) {
 
 function getPhoto(req, res, next) {
   var photo = photos.get(req.params[0]);
-  respondWithFile(res, photo.fileName, 'image/jpeg', {
+  respond.withFile(res, photo.fileName, 'image/jpeg', {
     'Link': '<' + photo.faces.url + '>; rel="http://restdesc.no.de/ontology#faces"; title="contained faces"; type="text/n3"'
   });
 }
@@ -110,7 +108,7 @@ function postPhoto(req, res, next) {
       return next();
     var photo = photos.create(files.photo.name);
     res.header('Location', photo.url);
-    respondWithTemplate(req, res, 'photo-post', { photo: photo }, 201); 
+    respond.withTemplate(req, res, 'photo-post', { photo: photo }, 201); 
   });
 }
 
@@ -134,7 +132,7 @@ function getFaces(req, res, next) {
           '>; rel="related"; title="depicted person"; type="text/n3"';
     }
     var fileName= __dirname + '/photos/' + id + '.n3';
-    respondWithFile(res, fileName, 'text/n3', {
+    respond.withFile(res, fileName, 'text/n3', {
       'Link': linkHeaders
     });
   }
@@ -149,7 +147,7 @@ function getFace(req, res, next) {
   var accept = req.header('Accept', '*/*');
   if ((accept.indexOf('image/jpeg') !== -1) ||
       (accept.indexOf('*/*') !== -1))
-    respondWithFile(res, fileName, 'image/jpeg');
+    respond.withFile(res, fileName, 'image/jpeg');
   else
     res.send('', 406);
 }
@@ -160,55 +158,10 @@ function getPerson(req, res, next) {
   var fileName = __dirname + pathname.replace(path, '/photos/$1_$2');
   var accept = req.header('Accept', '*/*');
   if((accept.indexOf('text/n3') !== -1))
-    respondWithFile(res, fileName + '.n3', 'text/n3');
+    respond.withFile(res, fileName + '.n3', 'text/n3');
   else if ((accept.indexOf('text/plain') !== -1) ||
            (accept.indexOf('*/*') !== -1))
-    respondWithFile(res, fileName + '.txt', 'text/plain');
+    respond.withFile(res, fileName + '.txt', 'text/plain');
   else
     res.send('', 406);
-}
-
-function respondWithFile(res, fileName, contentType, headers) {
-  fs.readFile(fileName, function (err, data) {
-    if (err) {
-      if(err.code == 'ENOENT') {
-        res.send('', 404);
-        return false;
-      }
-      res.send(500);
-      throw err;
-    }
-    res.header('Content-Type', contentType);
-    if(headers)
-      for(name in headers)
-        res.header(name, headers[name]);
-    res.send(data);
-    return true;
-  });
-}
-
-function respondWithTemplate(req, res, template, locals, statusCode) {
-  var accepts = req.header('Accept', '*/*').split(',');
-  function tryToRespond() {
-    var accept = accepts.shift(),
-        format = (accept == '*/*' ? 'text/html' : accept),
-        extension = format.split('/')[1],
-        templateFile = 'templates/' + template + '.' + extension + '.ejs';
-    path.exists(templateFile, function (exists) {
-      if(exists) {
-        fs.readFile(templateFile, 'utf-8', function (err, data) {
-          var result = ejs.render(data, { locals: locals || {} });
-          res.header('Content-Type', format + '; charset=utf-8')
-          res.send(result, statusCode);
-        });
-      }
-      else {
-        if (accepts.length)
-          tryToRespond();
-        else
-          res.send('', 406);
-      }
-    });
-  };
-  tryToRespond();
 }

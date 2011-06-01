@@ -3,6 +3,7 @@ var formidable = require('formidable'),
     fs = require('fs'),
     path = require('path'),
     ejs = require('ejs'),
+    url = require('url'),
     querystring = require('querystring'),
     photos = require('./photo-library.js').Photos;
 
@@ -29,8 +30,8 @@ app.get(/^\/photos$/, getPhotos);
 
 app.post(/^\/photos$/, postPhoto);
 
-app.get(/^\/photos\/\d+$/, getPhoto);
-app.options(/^\/photos\/\d+$/, optionsPhoto);
+app.get(/^\/photos\/(\d+)$/, getPhoto);
+app.options(/^\/photos\/(\d+)$/, optionsPhoto);
 
 app.get(/^\/photos\/\d+\/faces$/, getFaces);
 
@@ -83,25 +84,15 @@ function optionsPhotos(req, res, next) {
 }
 
 function getPhoto(req, res, next) {
-  var path = /^\/photos\/(\d+)$/;
-  var pathname = require('url').parse(req.url).pathname;
-  var id = pathname.replace(path, '$1');
-  var accept = req.header('Accept', '*/*');
-  if ((accept.indexOf('image/jpeg') !== -1) ||
-      (accept.indexOf('*/*') !== -1)) {
-    var location = '/photos/' + id + '/faces';
-    var fileName = __dirname + '/photos/' + id + '.jpg';
-    respondWithFile(res, fileName, 'image/jpeg', {
-      'Link': '<' + location + '>; rel="http://restdesc.no.de/ontology#faces"; title="contained faces"; type="text/n3"'
-    });
-  }
-  else
-    res.send('', 406);
+  var photo = photos.get(req.params[0]);
+  respondWithFile(res, photo.fileName, 'image/jpeg', {
+    'Link': '<' + photo.faces.url + '>; rel="http://restdesc.no.de/ontology#faces"; title="contained faces"; type="text/n3"'
+  });
 }
 
 function optionsPhoto(req, res, next) {
   var path = /^\/photos\/(\d+)$/;
-  var pathname = require('url').parse(req.url).pathname;
+  var pathname = url.parse(req.url).pathname;
   var id = pathname.replace(path, '$1');
   var accept = req.header('Accept', '*/*');
   res.header('Allow', 'GET, OPTIONS, POST');
@@ -144,7 +135,7 @@ function postPhoto(req, res, next) {
 
 function getFaces(req, res, next) {
   var path = /^\/photos\/(\d+)\/faces$/;
-  var pathname = require('url').parse(req.url).pathname;
+  var pathname = url.parse(req.url).pathname;
   var id = pathname.replace(path, '$1');
   var accept = req.header('Accept', '*/*');
   if ((accept.indexOf('text/n3') !== -1) ||
@@ -172,7 +163,7 @@ function getFaces(req, res, next) {
 
 function getFace(req, res, next) {
   var path = /^\/photos\/(\d+)\/faces\/(\d+)$/;
-  var pathname = require('url').parse(req.url).pathname;
+  var pathname = url.parse(req.url).pathname;
   var fileName = __dirname + pathname.replace(path, '/photos/$1_$2.jpg');
   var accept = req.header('Accept', '*/*');
   if ((accept.indexOf('image/jpeg') !== -1) ||
@@ -184,7 +175,7 @@ function getFace(req, res, next) {
 
 function getPerson(req, res, next) {
   var path = /^\/photos\/(\d+)\/persons\/(\d+)$/;
-  var pathname = require('url').parse(req.url).pathname;
+  var pathname = url.parse(req.url).pathname;
   var fileName = __dirname + pathname.replace(path, '/photos/$1_$2');
   var accept = req.header('Accept', '*/*');
   if((accept.indexOf('text/n3') !== -1))

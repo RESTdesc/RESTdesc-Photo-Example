@@ -4,6 +4,18 @@ var photos;
 
 function Photo(id) {
   this.id = id;
+  
+  Object.defineProperties(this, {
+    fileName: { value: 'photos/' + id + '.jpg' },
+    url: { value: '/photos/' + id },
+    faces: { value: new Faces(this) }
+  });
+}
+
+function Faces(photo) {
+  Object.defineProperties(this, {
+    url: { get: function() { return photo.url + '/faces'; } }
+  });
 }
 
 exports.Photos = {
@@ -22,6 +34,6 @@ exports.Photos = {
   },
   
   get: function (id) {
-    return photos[id];
+    return this.all()[id];
   }
 };

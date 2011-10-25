@@ -1,4 +1,4 @@
-@prefix : <http://a.example.org/ontology#>.
+@prefix : <http://restdesc.no.de/concepts#>.
 @prefix http: <http://www.w3.org/2006/http#>.
 @prefix tmpl: <http://purl.org/restdesc/http-template#>.
 @prefix foaf: <http://xmlns.com/foaf/>.
@@ -9,9 +9,9 @@
 =>
 {
   _:request http:methodName "POST";
-            http:absoluteURI "http://a.example.org/photos";
+            http:absoluteURI "http://restdesc.no.de/photos";
             http:body [ tmpl:formData ("photo=" ?photo) ];
-            http:resp [ tmpl:location ("http://a.example.org/photos/" ?photoId) ].
+            http:resp [ tmpl:location ("http://restdesc.no.de/photos/" ?photoId) ].
   
   ?photo :photoId ?photoId.
 }.

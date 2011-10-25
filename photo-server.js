@@ -102,9 +102,6 @@ function getPerson(req, res, next) {
 }
 
 function getDescription(req, res, next) {
-  if(!req.params[0].length)
-    return respond.withText(res, '', 'text/n3');
-  
   var uriPattern = new RegExp(req.params[0].replace(/\//g, '-')
                                            .replace(/\d+/g, 'id') + '.*');
   fs.readdir('descriptions', function (err, fileNames) {

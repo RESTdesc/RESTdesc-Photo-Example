@@ -11,7 +11,7 @@
 =>
 {
   _:request http:methodName "GET";
-            tmpl:requestURI ("http://restdesc.no.de/photos/" ?photoId "/people/" ?regionId);
+            tmpl:requestURI ("http://restdesc.no.de/photos/" ?photoId "/persons/" ?regionId);
             http:resp [ tmpl:represents ?person ].
   
   ?person foaf:name _:personName.

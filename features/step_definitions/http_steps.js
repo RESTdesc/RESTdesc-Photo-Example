@@ -119,7 +119,7 @@ Steps.Then(/^I should receive an? (.+) link to (\/.*)$/, function (ctx, linkName
 });
 
 Steps.Then(/^the response status should be (\d+).*$/, function (ctx, code) {
-  response.statusCode.should.eql(code);
+  response.statusCode.should.eql(parseInt(code, 10));
 	ctx.done();
 });
 

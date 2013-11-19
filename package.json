@@ -1,0 +1,10 @@
+{
+  "name": "RESTdesc",
+  "version": "1.0.0",
+  "dependencies": {
+    "formidable" : "~1.0.14",
+    "express" : "~3.4.4",
+    "ejs" : "~0.8.4",
+    "cucumis": "1.0.17"
+  }
+}
